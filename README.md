@@ -1,98 +1,223 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Event Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API for managing events and user registrations built with **NestJS**, **TypeScript**, **TypeORM**, and **PostgreSQL**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project was developed as part of the **DIGIT Technical Test** to demonstrate backend architecture, API design, and business rule implementation.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Tech Stack
 
-## Project setup
+* **Framework:** NestJS
+* **Language:** TypeScript
+* **ORM:** TypeORM
+* **Database:** PostgreSQL
+* **API Testing:** Postman
 
-```bash
-$ npm install
+---
+
+# Project Architecture
+
+## Module-Based Structure
+
+The application follows a **modular architecture** based on NestJS best practices.
+The codebase is divided into three core modules:
+
+* **Users Module**
+* **Events Module**
+* **Registrations Module**
+
+This ensures **Separation of Concerns**, making the project easier to maintain, test, and scale.
+
+```
+src
+ ├── config
+ │    └── database.config.ts
+ │
+ ├── modules
+ │    ├── events
+ │    │    ├── dto
+ │    │    ├── entities
+ │    │    ├── enums
+ │    │    ├── events.controller.ts
+ │    │    └── events.service.ts
+ │
+ │    ├── registrations
+ │    │    ├── entities
+ │    │    ├── enums
+ │    │    ├── registrations.controller.ts
+ │    │    └── registrations.service.ts
+ │
+ │    └── users
+ │         ├── entities
+ │         └── users.service.ts
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+# Architecture & Design Decisions
 
-# watch mode
-$ npm run start:dev
+## 1. Module-Based Design
 
-# production mode
-$ npm run start:prod
+The system is divided into independent modules (**Users, Events, Registrations**) to enforce clear responsibilities and maintainability.
+
+## 2. Data Integrity & Business Rules
+
+To meet the technical requirements, several constraints were implemented both at the **Application Layer (NestJS)** and **Database Layer (PostgreSQL)**.
+
+### Conflict Prevention
+
+A **UNIQUE constraint on `event_date`** prevents multiple events from being scheduled at the exact same time.
+
+### Double Registration Prevention
+
+A **composite UNIQUE constraint on (`user_id`, `event_id`)** prevents users from registering more than once for the same event.
+
+### Capacity Management
+
+Before approving or creating a registration, the system verifies that the number of approved attendees does not exceed the `max_attendees` limit.
+
+---
+
+# Validation
+
+All incoming requests are validated using **NestJS ValidationPipe**.
+
+This ensures:
+
+* Correct data types
+* Required fields are provided
+* Invalid requests are rejected before reaching the business logic
+
+---
+
+# Key Features Implemented
+
+✅ Event creation and management (Admin)
+
+✅ Retrieve upcoming events only
+
+✅ Event registration workflow
+
+```
+Pending → Approved
 ```
 
-## Run tests
+✅ Automatic business rule enforcement:
 
-```bash
-# unit tests
-$ npm run test
+* Prevent duplicate registrations
+* Enforce event capacity limits
+* Prevent registration to past events
 
-# e2e tests
-$ npm run test:e2e
+---
 
-# test coverage
-$ npm run test:cov
+# API Endpoints
+
+## Events
+
+Create event
+
+```
+POST /events
 ```
 
-## Deployment
+Get upcoming events
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+GET /events/upcoming
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Update event
 
-## Resources
+```
+PATCH /events/:id
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Delete event
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```
+DELETE /events/:id
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Registrations
 
-## Stay in touch
+Register for event
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+POST /registrations/:eventId
+```
 
-## License
+Approve registration
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```
+PATCH /registrations/:id/approve
+```
+
+Get event attendees
+
+```
+GET /registrations/event/:eventId
+```
+
+---
+
+# Postman Collection
+
+A complete **Postman Collection** is included in the repository.
+
+```
+Event_Management_API.postman_collection.json
+```
+
+## Steps to use
+
+1. Import the JSON file into Postman.
+2. Use **Admin endpoints** to create events.
+3. Use **User endpoints** to browse events and register.
+
+---
+
+# Assumptions, Limitations & Trade-offs
+
+## Identity Management
+
+Due to the **48-hour timeframe**, a simplified **email-based identity system** was implemented.
+
+The current schema is designed so that **JWT Authentication** can be added easily in the future through a dedicated Auth module.
+
+## Audit Logging
+
+The architecture includes preparation for **audit logging** to support future administrative monitoring and compliance features.
+
+## Timezone Handling
+
+All event dates are assumed to be stored in **UTC** to avoid inconsistencies between the server and database.
+
+---
+
+# Installation
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+---
+
+# Running the Application
+
+Development mode
+
+```bash
+npm run start:dev
+
+
+# Author
+
+**Laila Abou Hatab**
+
+DIGIT Technical Test
+March 2026
