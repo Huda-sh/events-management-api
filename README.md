@@ -2,7 +2,7 @@
 
 Backend API for managing events and user registrations built with **NestJS**, **TypeScript**, **TypeORM**, and **PostgreSQL**.
 
-This project was developed as part of the **DIGIT Technical Technical Assessment** to demonstrate backend architecture, API design, and business rule implementation.
+This project was developed as part of the **DIGIT Technical Assessment** to demonstrate backend architecture, API design, and business rule implementation.
 
 ---
 
@@ -21,8 +21,9 @@ This project was developed as part of the **DIGIT Technical Technical Assessment
 
 ## Module-Based Structure
 
-The application follows a **modular architecture** based on NestJS best practices.  
-The codebase is divided into independent modules to ensure **separation of concerns** and maintainability.
+The application follows a **modular architecture** based on NestJS best practices.
+
+The codebase is organized into independent modules to ensure **separation of concerns**, maintainability, and scalability.
 
 ```
 src
@@ -72,6 +73,8 @@ src
 - Retrieve event details
 - Event registration workflow
 
+Registration lifecycle:
+
 ```
 Pending → Approved
 ```
@@ -82,34 +85,39 @@ Pending → Approved
 
 # Business Rules Enforcement
 
-The following rules are enforced at the API level:
+The following business rules are enforced at both **API level and database level**.
 
 ### Event Scheduling Conflict Prevention
+
 Two events cannot be scheduled at the same date and time.
 
 ### Duplicate Registration Prevention
+
 A user can register **only once per event**.
 
 ### Capacity Management
-Registrations cannot exceed the defined `max_attendees` limit.
+
+Registrations cannot exceed the defined `max_attendees`.
 
 ### Past Event Protection
+
 Users cannot register for events that have already occurred.
 
 ---
 
 # Optional Enhancements Implemented
 
-Although optional, the following features were implemented:
-
 ### Authentication
-JWT-based authentication allowing users to access protected endpoints.
+
+JWT-based authentication for securing API endpoints.
 
 ### Role-Based Access Control (RBAC)
-Administrative endpoints are protected using guards to ensure that only users with the **ADMIN role** can perform management operations.
+
+Administrative endpoints are protected so that only **ADMIN users** can perform management operations.
 
 ### Audit Logging
-All administrative operations (POST, PATCH, DELETE) are logged automatically using a **global NestJS interceptor**.
+
+All administrative operations (`POST`, `PATCH`, `DELETE`) are logged automatically using a **global NestJS interceptor**.
 
 The audit log stores:
 
@@ -123,11 +131,75 @@ The audit log stores:
 
 # Validation
 
-All incoming requests are validated using **NestJS ValidationPipe** to ensure:
+All incoming requests are validated using **NestJS ValidationPipe**.
 
-- Required fields exist
-- Correct data types
+This ensures:
+
+- Required fields are present
+- Data types are correct
 - Invalid requests are rejected before reaching business logic
+
+---
+
+# Database Design
+
+The database schema is provided in:
+
+```
+schema.sql
+```
+
+The schema demonstrates database design practices including:
+
+### ENUM Types
+
+- `user_role`
+- `event_type`
+- `registration_status`
+
+### Tables
+
+- `users`
+- `events`
+- `registrations`
+- `audit_logs`
+
+### Constraints
+
+- Unique email for users
+- Prevent duplicate registrations per event
+- Check constraint for `max_attendees`
+- Foreign key relationships between tables
+
+### Business Rules at Database Level
+
+Unique index preventing multiple events at the same time:
+
+```
+UNIQUE INDEX unique_event_date
+```
+
+Prevent duplicate event registrations:
+
+```
+UNIQUE INDEX unique_user_event
+```
+
+### Performance Indexes
+
+Indexes are added to improve query performance:
+
+- events by date
+- registrations by event
+- registrations by user
+
+### Database View
+
+A database view is included to compute approved attendee counts:
+
+```
+event_approved_counts
+```
 
 ---
 
@@ -213,7 +285,7 @@ GET /registrations/event/:eventId
 
 ## Audit Logs (Admin only)
 
-Retrieve all administrative logs
+Retrieve administrative logs
 
 ```
 GET /audit-logs
@@ -235,6 +307,8 @@ npm install
 
 Create a `.env` file in the project root.
 
+Example configuration:
+
 ```
 JWT_SECRET=supersecretkey
 
@@ -255,19 +329,23 @@ Create a PostgreSQL database named:
 events_db
 ```
 
-The schema will be automatically created using **TypeORM synchronization** when the application starts.
+If needed, the full database schema is provided in:
+
+```
+schema.sql
+```
 
 ---
 
 # Running the Application
 
-Development mode
+Start the development server:
 
 ```
 npm run start:dev
 ```
 
-Server runs on:
+Server runs at:
 
 ```
 http://localhost:3000
@@ -277,33 +355,37 @@ http://localhost:3000
 
 # Postman Collection
 
-A complete **Postman Collection** is included in the repository.
+A complete Postman collection is included in the repository.
 
 ```
-Event_Management_API.postman_collection.json
+postman_collection.json
 ```
 
-## Steps to use
+To test the API:
 
 1. Import the collection into Postman
-2. Run the authentication endpoints
+2. Run authentication endpoints
 3. Use the returned JWT token for protected endpoints
 
 ---
 
-# Assumptions, Limitations & Trade-offs
+# Assumptions & Trade-offs
 
-### Identity Management
-The system uses a simplified **email-based authentication model** suitable for demonstration purposes.
+### Identity Model
 
-### Audit Logging Scope
-Only administrative actions are logged. User read operations are intentionally excluded.
+Authentication uses a simple email/password model suitable for the scope of the assessment.
+
+### Audit Scope
+
+Only administrative actions are logged.
 
 ### Timezone Handling
-All event timestamps are stored in **UTC**.
+
+Event timestamps are stored in **UTC**.
 
 ### Deployment
-Deployment was not implemented due to the limited timeframe but the project structure supports containerization and cloud deployment.
+
+Deployment was not implemented due to time constraints, but the project structure supports containerization and cloud deployment.
 
 ---
 
