@@ -9,20 +9,21 @@ RUN apk add --no-cache python3 make g++
 # Copy package manifests first to leverage build cache
 COPY package.json pnpm-lock.yaml ./
 
-# Install all dependencies (dev + prod) so we can build
-RUN npm install
+# Install pnpm globally and then install all dependencies (including dev)
+# Using --no-strict-peer-dependencies avoids failures if peer dependency warnings occur
+RUN npm install -g pnpm && pnpm install --no-strict-peer-dependencies
 
 # Copy source files
 COPY . .
 
-# Build TypeScript
+# Build TypeScript (you can also use 'pnpm run build' if preferred)
 RUN npm run build
 
 # Stage 2: runtime image
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Copy production dependencies only
+# Copy production dependencies only (but note: we're copying the entire node_modules)
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
