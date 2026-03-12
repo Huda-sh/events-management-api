@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Event } from '../../events/entities/event.entity';
 import { User } from '../../users/entities/user.entity';
+import { education_level } from '../enums/education-level.enum';
 
 @Entity('registrations')
 export class Registration {
@@ -18,6 +25,15 @@ export class Registration {
   @Column({ default: 'PENDING' })
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   registered_at: Date;
+
+  @Column({ nullable: true })
+  linkedin_profile?: string;
+
+  @Column({ type: 'simple-enum', enum: education_level, nullable: true })
+  education_level?: education_level;
+
+  @Column({ type: 'text', nullable: true })
+  motivation?: string;
 }

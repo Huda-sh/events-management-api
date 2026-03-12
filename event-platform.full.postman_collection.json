@@ -1,0 +1,524 @@
+{
+  "info": {
+    "name": "Event Management API - Full Collection",
+    "description": "Full Postman collection for the Event Management API, including query parameters, response schemas, and admin-marked endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\",\n  \"dateOfBirth\": \"1990-05-15\",\n  \"gender\": \"FEMALE\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register" },
+            "description": "Register a new user.\n\nResponse example includes user object (without password hash).\n\nEnum values:\n- gender: MALE, FEMALE, OTHER"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\",\n  \"dateOfBirth\": \"1990-05-15\",\n  \"gender\": \"FEMALE\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{baseUrl}}/auth/register" }
+              },
+              "status": "201 Created",
+              "code": 201,
+              "body": "{\n  \"message\": \"User registered successfully\",\n  \"user\": {\n    \"id\": 5,\n    \"first_name\": \"Jane\",\n    \"last_name\": \"Doe\",\n    \"email\": \"jane@example.com\",\n    \"date_of_birth\": \"1990-05-15T00:00:00.000Z\",\n    \"gender\": \"FEMALE\",\n    \"role\": \"USER\",\n    \"created_at\": \"2026-03-12T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login" },
+            "description": "Authenticate to receive a JWT access token.\n\nUse returned token in Authorization header: Bearer {{authToken}}"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{baseUrl}}/auth/login" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Login successful\",\n  \"access_token\": \"<jwt-token>\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Events (Admin)",
+      "item": [
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"NestJS Deep Dive\",\n  \"description\": \"Advanced backend session at Digit Center\",\n  \"max_attendees\": 30,\n  \"event_date\": \"2026-05-15T14:00:00Z\",\n  \"event_type\": \"WORKSHOP\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/events" },
+            "description": "Create an event (admin only).\n\nEnum values for event_type: CONFERENCE, WEBINAR, WORKSHOP.\n\nResponse includes created event and creator metadata."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"NestJS Deep Dive\",\n  \"description\": \"Advanced backend session at Digit Center\",\n  \"max_attendees\": 30,\n  \"event_date\": \"2026-05-15T14:00:00Z\",\n  \"event_type\": \"WORKSHOP\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{baseUrl}}/events" }
+              },
+              "status": "201 Created",
+              "code": 201,
+              "body": "{\n  \"message\": \"Event created successfully\",\n  \"event\": {\n    \"id\": 10,\n    \"name\": \"NestJS Deep Dive\",\n    \"description\": \"Advanced backend session at Digit Center\",\n    \"max_attendees\": 30,\n    \"event_date\": \"2026-05-15T14:00:00.000Z\",\n    \"event_type\": \"WORKSHOP\",\n    \"creator\": {\n      \"id\": 1,\n      \"email\": \"admin@example.com\",\n      \"role\": \"ADMIN\"\n    },\n    \"created_at\": \"2026-03-12T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events?page=1&limit=20&search=&type=&dateFrom=&dateTo=",
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term (matches name + description)"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "description": "Filter by event_type"
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "",
+                  "description": "ISO date (inclusive)"
+                },
+                {
+                  "key": "dateTo",
+                  "value": "",
+                  "description": "ISO date (inclusive)"
+                }
+              ]
+            },
+            "description": "List events (admin-only).\n\nResponse is paginated. Enum values for event_type: CONFERENCE, WEBINAR, WORKSHOP."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/events?page=1&limit=20",
+                  "query": [
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "20" }
+                  ]
+                }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Events retrieved successfully\",\n  \"items\": [\n    {\n      \"id\": 10,\n      \"name\": \"NestJS Deep Dive\",\n      \"description\": \"Advanced backend session at Digit Center\",\n      \"max_attendees\": 30,\n      \"event_date\": \"2026-05-15T14:00:00.000Z\",\n      \"event_type\": \"WORKSHOP\",\n      \"creator\": {\n        \"id\": 1,\n        \"email\": \"admin@example.com\",\n        \"role\": \"ADMIN\"\n      },\n      \"registrationCount\": 5\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"limit\": 20,\n  \"totalPages\": 1,\n  \"hasNext\": false,\n  \"hasPrev\": false,\n  \"nextPage\": null,\n  \"prevPage\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated workshop description\",\n  \"max_attendees\": 35\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/events/1" },
+            "description": "Update an existing event (admin only). Only provided fields are updated.\n\nEvent type options: CONFERENCE, WEBINAR, WORKSHOP."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"Updated workshop description\",\n  \"max_attendees\": 35\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{baseUrl}}/events/1" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Event updated successfully\",\n  \"event\": {\n    \"id\": 1,\n    \"name\": \"NestJS Deep Dive\",\n    \"description\": \"Updated workshop description\",\n    \"max_attendees\": 35,\n    \"event_date\": \"2026-05-15T14:00:00.000Z\",\n    \"event_type\": \"WORKSHOP\",\n    \"creator\": {\n      \"id\": 1,\n      \"email\": \"admin@example.com\",\n      \"role\": \"ADMIN\"\n    },\n    \"created_at\": \"2026-03-12T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/events/1" },
+            "description": "Delete an event (admin only)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": { "raw": "{{baseUrl}}/events/1" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Event deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Events (User)",
+      "item": [
+        {
+          "name": "Get Upcoming Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events/upcoming?page=1&limit=20&search=&type=&dateFrom=&dateTo=",
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term (matches name + description)"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "description": "Filter by event_type"
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "",
+                  "description": "ISO date (inclusive)"
+                },
+                {
+                  "key": "dateTo",
+                  "value": "",
+                  "description": "ISO date (inclusive)"
+                }
+              ]
+            },
+            "description": "Get upcoming events (JWT required).\n\nEnum values for event_type: CONFERENCE, WEBINAR, WORKSHOP."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/events/upcoming?page=1&limit=20",
+                  "query": [
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "20" }
+                  ]
+                }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Events retrieved successfully\",\n  \"items\": [\n    {\n      \"id\": 10,\n      \"name\": \"NestJS Deep Dive\",\n      \"description\": \"Advanced backend session at Digit Center\",\n      \"max_attendees\": 30,\n      \"event_date\": \"2026-05-15T14:00:00.000Z\",\n      \"event_type\": \"WORKSHOP\",\n      \"registrationCount\": 5\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"limit\": 20,\n  \"totalPages\": 1,\n  \"hasNext\": false,\n  \"hasPrev\": false,\n  \"nextPage\": null,\n  \"prevPage\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Event Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/events/1" },
+            "description": "Get event details (JWT required). If user is not admin, past events are not returned. Response includes registrationCount."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": { "raw": "{{baseUrl}}/events/1" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Event retrieved successfully\",\n  \"id\": 1,\n  \"name\": \"NestJS Deep Dive\",\n  \"description\": \"Advanced backend session at Digit Center\",\n  \"max_attendees\": 30,\n  \"event_date\": \"2026-05-15T14:00:00.000Z\",\n  \"event_type\": \"WORKSHOP\",\n  \"creator\": {\n    \"id\": 1,\n    \"email\": \"admin@example.com\",\n    \"role\": \"ADMIN\"\n  },\n  \"registrationCount\": 5\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Attended Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/events/attended" },
+            "description": "Get the current user's registrations (JWT required). Response includes attendanceStatus derived from registration status and event date."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": { "raw": "{{baseUrl}}/events/attended" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"User registrations retrieved successfully\",\n  \"events\": [\n    {\n      \"event\": {\n        \"id\": 10,\n        \"name\": \"NestJS Deep Dive\",\n        \"description\": \"Advanced backend session at Digit Center\",\n        \"max_attendees\": 30,\n        \"event_date\": \"2026-05-15T14:00:00.000Z\",\n        \"event_type\": \"WORKSHOP\"\n      },\n      \"registrationStatus\": \"APPROVED\",\n      \"attendanceStatus\": \"COMPLETED\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "Register for Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"linkedinProfile\": \"https://www.linkedin.com/in/jane-doe\",\n  \"educationLevel\": \"BACHELORS\",\n  \"motivation\": \"I want to deepen my backend skills\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/registrations/1" },
+            "description": "Register the current user to an event (JWT required).\n\nEnum values for educationLevel: HIGH_SCHOOL, BACHELORS, MASTERS, PHD, OTHER."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"linkedinProfile\": \"https://www.linkedin.com/in/jane-doe\",\n  \"educationLevel\": \"BACHELORS\",\n  \"motivation\": \"I want to deepen my backend skills\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{baseUrl}}/registrations/1" }
+              },
+              "status": "201 Created",
+              "code": 201,
+              "body": "{\n  \"message\": \"Registration submitted successfully\",\n  \"registrationId\": 42,\n  \"status\": \"PENDING\",\n  \"eventId\": 1,\n  \"userId\": 5\n}"
+            }
+          ]
+        },
+        {
+          "name": "Approve Registration (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/registrations/1/approve" },
+            "description": "Approve a registration (admin only).\n\nResponse includes the full registration object with status updated to APPROVED."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": { "raw": "{{baseUrl}}/registrations/1/approve" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Registration approved successfully\",\n  \"registration\": {\n    \"id\": 1,\n    \"status\": \"APPROVED\",\n    \"registered_at\": \"2026-03-12T12:00:00.000Z\",\n    \"linkedin_profile\": \"https://www.linkedin.com/in/jane-doe\",\n    \"education_level\": \"BACHELORS\",\n    \"motivation\": \"I want to deepen my backend skills\",\n    \"user\": {\n      \"id\": 5,\n      \"email\": \"jane@example.com\",\n      \"role\": \"USER\"\n    },\n    \"event\": {\n      \"id\": 1,\n      \"name\": \"NestJS Deep Dive\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Event Attendees (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/registrations/event/1?page=1&limit=20",
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number" },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Items per page"
+                }
+              ]
+            },
+            "description": "Get paginated list of registrations for a given event (admin only)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/registrations/event/1?page=1&limit=20",
+                  "query": [
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "20" }
+                  ]
+                }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Event attendees retrieved successfully\",\n  \"attendees\": [\n    {\n      \"id\": 1,\n      \"status\": \"PENDING\",\n      \"registered_at\": \"2026-03-12T12:00:00.000Z\",\n      \"linkedin_profile\": \"https://www.linkedin.com/in/jane-doe\",\n      \"education_level\": \"BACHELORS\",\n      \"motivation\": \"I want to deepen my backend skills\",\n      \"user\": {\n        \"id\": 5,\n        \"email\": \"jane@example.com\",\n        \"role\": \"USER\"\n      }\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"limit\": 20,\n  \"totalPages\": 1,\n  \"hasNext\": false,\n  \"hasPrev\": false,\n  \"nextPage\": null,\n  \"prevPage\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs (Admin)",
+      "item": [
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/audit-logs" },
+            "description": "Retrieve audit logs (admin only). Each record includes the admin ID (if available), action, entity type, and entity ID."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{authToken}}" }
+                ],
+                "url": { "raw": "{{baseUrl}}/audit-logs" }
+              },
+              "status": "200 OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"admin_id\": 1,\n    \"action\": \"CREATE\",\n    \"entity\": \"Event\",\n    \"entity_id\": 10,\n    \"created_at\": \"2026-03-12T12:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

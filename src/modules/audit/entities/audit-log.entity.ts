@@ -1,5 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, Column, CreateDateColumn } from 'typeorm';
-
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('audit_logs')
 export class AuditLog {
@@ -10,10 +15,10 @@ export class AuditLog {
   admin_id: number;
 
   @Column()
-  action: string; 
+  action: string;
 
   @Column()
-  entity: string; 
+  entity: string;
 
   @Column({ nullable: true })
   entity_id: number;

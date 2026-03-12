@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import { event_type } from '../enums/event-type.enum';
 
 export class CreateEventDto {
-
   @IsString()
   name: string;
 
@@ -18,5 +17,5 @@ export class CreateEventDto {
   event_date: Date;
 
   @IsString()
-  event_type: event_type; 
+  event_type: event_type;
 }

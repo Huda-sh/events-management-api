@@ -1,6 +1,6 @@
 # Event Management API
 
-Backend API for managing events and user registrations built with **NestJS**, **TypeScript**, **TypeORM**, and **PostgreSQL**.
+Backend API for managing events and user registrations built with **NestJS**, **TypeScript**, **TypeORM**, and **SQLite**.
 
 This project was developed as part of the **DIGIT Technical Assessment** to demonstrate backend architecture, API design, and business rule implementation.
 
@@ -11,7 +11,7 @@ This project was developed as part of the **DIGIT Technical Assessment** to demo
 - **Framework:** NestJS
 - **Language:** TypeScript
 - **ORM:** TypeORM
-- **Database:** PostgreSQL
+- **Database:** SQLite
 - **Authentication:** JWT
 - **API Testing:** Postman
 
@@ -312,28 +312,47 @@ Example configuration:
 ```
 JWT_SECRET=supersecretkey
 
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=events_db
+# SQLite database file path (relative to project root)
+SQLITE_DB_PATH=./data/database.sqlite
+
+# Seed admin user (run `npm run seed`)
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin123
+ADMIN_FIRST_NAME=Admin
+ADMIN_LAST_NAME=User
+ADMIN_DOB=1990-01-01
+ADMIN_GENDER=OTHER
+```
+
+---
+
+# Seeding Data
+
+## Seed Admin User
+
+Run the seed script to create an admin user (must be run after setting the env vars above):
+
+```
+npm run seed
+```
+
+## Seed Sample Events + Audit Logs
+
+After the admin user exists, generate 20 sample events with audit logs:
+
+```
+npm run seed:events
 ```
 
 ---
 
 # Database Setup
 
-Create a PostgreSQL database named:
+The application uses an embedded SQLite database file by default.
 
-```
-events_db
-```
+The database file will be created automatically at the path configured via `SQLITE_DB_PATH`.
 
-If needed, the full database schema is provided in:
-
-```
-schema.sql
-```
+If you want to reset the schema, delete the SQLite file and restart the app.
 
 ---
 

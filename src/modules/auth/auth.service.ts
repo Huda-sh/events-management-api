@@ -1,20 +1,25 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import * as bcrypt from 'bcrypt'
-import { UsersService } from '../users/users.service'
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async register(data: RegisterDto) {
-    const existingUser = await this.usersService.findByEmail(data.email);
+    const email = data.email.trim().toLowerCase();
+
+    const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
@@ -22,16 +27,25 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = await this.usersService.create({
-      name: data.name,
-      email: data.email,
-      password_hash: hashedPassword, 
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email,
+      password_hash: hashedPassword,
+      date_of_birth: new Date(data.dateOfBirth),
+      gender: data.gender,
     });
 
-    return user;
+    const { password_hash, ...safeUser } = user as any;
+
+    return {
+      message: 'User registered successfully',
+      user: safeUser,
+    };
   }
 
   async login(data: LoginDto) {
-    const user = await this.usersService.findByEmail(data.email);
+    const email = data.email.trim().toLowerCase();
+    const user = await this.usersService.findByEmail(email);
 
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
@@ -45,6 +59,7 @@ export class AuthService {
     };
 
     return {
+      message: 'Login successful',
       access_token: this.jwtService.sign(payload),
     };
   }

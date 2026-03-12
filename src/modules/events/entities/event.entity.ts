@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Registration } from '../../registrations/entities/registration.entity';
 import { User } from '../../users/entities/user.entity'; // تأكدي من المسار
 import { event_type } from '../enums/event-type.enum';
@@ -17,10 +24,10 @@ export class Event {
   @Column()
   max_attendees: number;
 
-  @Column({ type: 'timestamp', unique: true }) 
+  @Column({ type: 'datetime', unique: true })
   event_date: Date;
 
-  @Column({ type: 'enum', enum: event_type })
+  @Column({ type: 'simple-enum', enum: event_type })
   event_type: event_type;
 
   @ManyToOne(() => User)

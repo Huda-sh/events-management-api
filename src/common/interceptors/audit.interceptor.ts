@@ -23,16 +23,11 @@ export class AuditInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(async (data) => {
         if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(request.method)) {
-
           const entity =
-            request.baseUrl?.split('/')[1] ||
-            request.url.split('/')[1];
+            request.baseUrl?.split('/')[1] || request.url.split('/')[1];
 
           const entityId =
-            data?.id ||
-            data?.data?.id ||
-            request.params?.id ||
-            null;
+            data?.id || data?.data?.id || request.params?.id || null;
 
           await this.auditRepo.save({
             admin_id: user?.id || null,
