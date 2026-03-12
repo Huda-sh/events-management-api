@@ -388,6 +388,38 @@ To test the API:
 
 ---
 
+# Docker
+
+This repo includes a `Dockerfile` and `docker-compose.yml` to run the API in a container.
+
+### Preserve database state
+
+The SQLite database file is stored in `./data/database.sqlite`. Docker mounts the `data/` directory as a volume, so all data is preserved across container restarts.
+
+### Build and run
+
+```bash
+docker compose up --build
+```
+
+The API will be available at:
+
+```
+http://localhost:3000
+```
+
+### Seed the admin user (optional)
+
+If you need to (re)create the default admin user, run the seed script inside the running container:
+
+```bash
+docker compose run --rm api npm run seed
+```
+
+You can customize admin credentials with environment variables in `docker-compose.yml`.
+
+---
+
 # Assumptions & Trade-offs
 
 ### Identity Model

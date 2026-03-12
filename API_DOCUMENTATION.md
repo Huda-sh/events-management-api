@@ -44,11 +44,13 @@ Register a new user.
 - `gender` (string, required, values below)
 
 **Enum: gender**
+
 - `MALE`
 - `FEMALE`
 - `OTHER`
 
 **Response**
+
 - `message` (string)
 - `user` (object, excluding password)
 
@@ -64,6 +66,7 @@ Authenticate and receive a JWT token.
 - `password` (string, required)
 
 **Response**
+
 - `message` (string)
 - `access_token` (string)
 
@@ -78,6 +81,7 @@ Authenticate and receive a JWT token.
 Create a new event.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Request Body** (JSON):
@@ -89,11 +93,13 @@ Create a new event.
 - `event_type` (string, required)
 
 **Enum: event_type**
+
 - `CONFERENCE`
 - `WEBINAR`
 - `WORKSHOP`
 
 **Response**
+
 - `message` (string)
 - `event` (object)
 
@@ -104,6 +110,7 @@ Create a new event.
 Fetch all events (paginated).
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Query Parameters**
@@ -116,6 +123,7 @@ Fetch all events (paginated).
 - `dateTo` (string, optional): ISO date (inclusive)
 
 **Response**
+
 - `message` (string)
 - `items` (array of event objects)
 - `total`, `page`, `limit`, `totalPages`, `hasNext`, `hasPrev`, `nextPage`, `prevPage`
@@ -127,11 +135,13 @@ Fetch all events (paginated).
 Fetch upcoming events (future `event_date`).
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Query Parameters** (same as `GET /events`)
 
 **Response**
+
 - Same pagination object as above.
 
 ---
@@ -144,9 +154,11 @@ Fetch a single event by ID.
 - Non-admin users will receive `404` for past events.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Response**
+
 - `message` (string)
 - Event object (including `registrationCount`)
 
@@ -157,12 +169,15 @@ Fetch a single event by ID.
 Update an existing event (partial updates supported).
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Request Body** (JSON)
+
 - Any subset of the fields from `POST /events`.
 
 **Response**
+
 - `message` (string)
 - `event` (updated object)
 
@@ -173,9 +188,11 @@ Update an existing event (partial updates supported).
 Delete an event by ID.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Response**
+
 - `message` (string)
 
 ---
@@ -187,9 +204,11 @@ Delete an event by ID.
 Register the authenticated user for an event.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Path Parameters**
+
 - `eventId` (number): event to register for
 
 **Request Body** (JSON)
@@ -199,6 +218,7 @@ Register the authenticated user for an event.
 - `motivation` (string, optional)
 
 **Enum: education_level**
+
 - `HIGH_SCHOOL`
 - `BACHELORS`
 - `MASTERS`
@@ -206,6 +226,7 @@ Register the authenticated user for an event.
 - `OTHER`
 
 **Response**
+
 - `message` (string)
 - `registrationId` (number)
 - `status` (string: `PENDING`)
@@ -219,16 +240,20 @@ Register the authenticated user for an event.
 Approve a pending registration.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Path Parameters**
+
 - `id` (number): registration ID
 
 **Response**
+
 - `message` (string)
 - `registration` (object)
 
 **Enum: registration_status**
+
 - `PENDING`
 - `APPROVED`
 - `REJECTED`
@@ -240,16 +265,20 @@ Approve a pending registration.
 Get a paginated list of registrations for an event.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Path Parameters**
+
 - `eventId` (number): event ID
 
 **Query Parameters**
+
 - `page` (integer, default `1`)
 - `limit` (integer, default `20`)
 
 **Response**
+
 - `message` (string)
 - `attendees` (array of registration objects)
 - Pagination fields (`total`, `page`, `limit`, etc.)
@@ -263,9 +292,11 @@ Get a paginated list of registrations for an event.
 Fetch registrations for the current user.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Response**
+
 - `message` (string)
 - `events` (array) where each item includes:
   - `event` object
@@ -281,9 +312,11 @@ Fetch registrations for the current user.
 Get a list of all audit log entries.
 
 **Headers**
+
 - `Authorization: Bearer <token>`
 
 **Response**
+
 - Array of audit log records with:
   - `id`
   - `admin_id`
@@ -311,6 +344,7 @@ A complete Postman collection is included in the repo:
 - `event-platform.full.postman_collection.json`
 
 To use the collection:
+
 1. Import it into Postman.
 2. Set `{{baseUrl}}` to your API base URL (e.g., `http://localhost:3000`).
 3. Call `POST /auth/login` and copy the returned token into `{{authToken}}`.
@@ -320,20 +354,24 @@ To use the collection:
 ## ✅ Enums Reference
 
 ### `user_role`
+
 - `ADMIN`
 - `USER`
 
 ### `gender`
+
 - `MALE`
 - `FEMALE`
 - `OTHER`
 
 ### `event_type`
+
 - `CONFERENCE`
 - `WEBINAR`
 - `WORKSHOP`
 
 ### `education_level`
+
 - `HIGH_SCHOOL`
 - `BACHELORS`
 - `MASTERS`
@@ -341,6 +379,7 @@ To use the collection:
 - `OTHER`
 
 ### `registration_status`
+
 - `PENDING`
 - `APPROVED`
 - `REJECTED`

@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      # Ensure environment variables can be used for seeding/admin customization
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASSWORD=admin123
+      - ADMIN_FIRST_NAME=Admin
+      - ADMIN_LAST_NAME=User
+      - ADMIN_DOB=1990-01-01
+      - ADMIN_GENDER=OTHER
+    command: ["node", "dist/main"]
